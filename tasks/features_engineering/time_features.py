@@ -5,10 +5,11 @@ import logging
 from typing import Optional
 from datetime import datetime, timezone
 
+
 def setup_logger(name: str) -> logging.Logger:
     """Configure logging for the module."""
     base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    logs_dir = os.path.join(base_dir, 'logs', 'features_engineering')
+    logs_dir = os.path.join(base_dir, 'tasks', 'features_engineering', 'logs')
     os.makedirs(logs_dir, exist_ok=True)
     logger = logging.getLogger(name)
     logger.setLevel(logging.INFO)
@@ -38,15 +39,15 @@ def add_time_features(df: pd.DataFrame) -> pd.DataFrame:
         raise ValueError("'published_date' column not found")
 
     df = df.copy()
-    df['published_date'] = pd.to_datetime(df['published_date'], utc=True)
+    df['published_date'] = pd.to_datetime(df['published_date'], utc=True, errors='coerce')
     
     # Initialize features
     features = [
         'day_of_week', 'hour', 'is_weekend', 'is_market_hours',
-        'is_earnings_season', 'is_quarter_end'
+        'is_earnings_season', 'is_quarter_end', 'days_since_event'
     ]
     for feature in features:
-        df[feature] = None
+        df[feature] = np.nan if feature != 'is_weekend' else 0
 
     # Add time-based features
     df['day_of_week'] = df['published_date'].dt.dayofweek
@@ -68,12 +69,12 @@ def add_time_features(df: pd.DataFrame) -> pd.DataFrame:
     df['days_since_event'] = (current_time - df['published_date']).dt.days
     
     # Drop temporary column
-    df = df.drop(columns=['month'])
+    df = df.drop(columns=['month'], errors='ignore')
     
     # Log feature statistics
     base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    stats = df[features + ['days_since_event']].describe().to_dict()
-    stats_path = os.path.join(base_dir, 'reports', f'time_feature_stats_{datetime.now().strftime("%Y%m%d_%H%M%S")}.csv')
+    stats = df[features].describe().to_dict()
+    stats_path = os.path.join(base_dir, 'data', 'features_reports', f'time_feature_stats_{datetime.now().strftime("%Y%m%d_%H%M%S")}.csv')
     os.makedirs(os.path.dirname(stats_path), exist_ok=True)
     pd.DataFrame(stats).to_csv(stats_path, index=True)
     logger.info(f"Saved time feature statistics to {stats_path}")
@@ -82,6 +83,8 @@ def add_time_features(df: pd.DataFrame) -> pd.DataFrame:
 
 if __name__ == '__main__':
     base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    df = pd.read_csv(os.path.join(base_dir, 'data', 'feature_engineering', 'yfinance_enriched_data.csv'))
+    input_path = os.path.join(base_dir, 'data', 'feature_engineering', f'yfinance_enriched_data_{datetime.now().strftime("%Y%m%d")}.csv')
+    df = pd.read_csv(input_path)
     df_with_time_features = add_time_features(df)
-    df_with_time_features.to_csv(os.path.join(base_dir, 'data', 'feature_engineering', 'time_features_data.csv'), index=False)
+    df_with_time_features.to_csv(os.path.join(base_dir, 'data', 'feature_engineering', f'time_features_data_{datetime.now().strftime("%Y%m%d")}.csv'), index=False)
+

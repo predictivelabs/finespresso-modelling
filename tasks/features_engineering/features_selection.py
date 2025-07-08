@@ -1,8 +1,10 @@
-from datetime import datetime
+import sys
+import os
+
 import pandas as pd
 import numpy as np
-import os
 import logging
+from datetime import datetime
 from typing import Dict, List, Tuple
 from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
 from sklearn.preprocessing import OneHotEncoder
@@ -12,7 +14,7 @@ from sklearn.pipeline import Pipeline
 def setup_logger(name: str) -> logging.Logger:
     """Configure logging for the module."""
     base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    logs_dir = os.path.join(base_dir, 'logs', 'features_engineering')
+    logs_dir = os.path.join(base_dir, 'tasks', 'features_engineering', 'logs')
     os.makedirs(logs_dir, exist_ok=True)
     logger = logging.getLogger(name)
     logger.setLevel(logging.INFO)
@@ -45,26 +47,26 @@ def validate_categorical_columns(df: pd.DataFrame, categorical_cols: List[str]) 
 def select_features(df: pd.DataFrame, params: Dict) -> Tuple[pd.DataFrame, List[str]]:
     """
     Perform feature selection using correlation and random forest importance.
-    Retains the 'event' column in the output DataFrame.
+    Retains the 'event', 'content', 'title', 'actual_side', and 'price_change_percentage' columns.
     
     Parameters:
     - df: DataFrame containing features and target
     - params: Dictionary with 'method', 'correlation_threshold', 'importance_threshold'
     
     Returns:
-    - df_selected: DataFrame with selected features and 'event' column
-    - selected_features: List of selected feature names (excluding 'event')
+    - df_selected: DataFrame with selected features and required columns
+    - selected_features: List of selected feature names (excluding required columns)
     """
     method = params.get('method', 'correlation_and_rf')
     correlation_threshold = params.get('correlation_threshold', 0.8)
-    importance_threshold = params.get('importance_threshold', 0.01)
+    importance_threshold = params.get('importance_threshold', 0.005)
     
     numerical_cols = [
         'market_cap', 'float_shares', 'avg_volume', 'beta', 'recent_volume', 'float_ratio',
         'sector_performance', 'day_of_week', 'hour', 'combined_sentiment', 'prev_news_sentiment',
         'volatility', 'sector_relative_volatility', 'days_since_event'
     ]
-    categorical_cols = ['exchange', 'sector', 'industry', 'market_cap_category']  # Exclude 'event'
+    categorical_cols = ['exchange', 'sector', 'industry', 'market_cap_category']
     required_cols = ['event', 'content', 'title', 'actual_side', 'price_change_percentage']
     
     # Validate columns
@@ -84,8 +86,9 @@ def select_features(df: pd.DataFrame, params: Dict) -> Tuple[pd.DataFrame, List[
     logger.info(f"Available categorical columns: {available_cat_cols}")
     
     # Handle missing values
+    df = df.copy()
     df[available_num_cols] = df[available_num_cols].fillna(df[available_num_cols].median())
-    df[available_cat_cols + ['event']] = df[available_cat_cols + ['event']].fillna('Unknown')
+    df[available_cat_cols] = df[available_cat_cols].fillna('Unknown')
     
     # Preprocessing pipeline
     preprocessor = ColumnTransformer(
@@ -123,6 +126,7 @@ def select_features(df: pd.DataFrame, params: Dict) -> Tuple[pd.DataFrame, List[
             selected_features = [f for f in feature_names if f not in to_drop]
             X = X[:, [i for i, f in enumerate(feature_names) if f in selected_features]]
             logger.info(f"After correlation filter: {len(selected_features)} features remain")
+            logger.info(f"Dropped due to high correlation: {to_drop}")
         except Exception as e:
             logger.warning(f"Correlation-based selection failed: {str(e)}. Skipping correlation filter.")
     
@@ -131,40 +135,54 @@ def select_features(df: pd.DataFrame, params: Dict) -> Tuple[pd.DataFrame, List[
         try:
             model.fit(X, y)
             importances = pd.Series(model.feature_importances_, index=selected_features)
+            dropped_features = importances[importances <= importance_threshold].index.tolist()
             selected_features = importances[importances > importance_threshold].index.tolist()
             X = X[:, [i for i, f in enumerate(feature_names) if f in selected_features]]
             logger.info(f"After RF importance filter: {len(selected_features)} features remain")
+            logger.info(f"Dropped due to low importance: {dropped_features}")
             
             # Save feature importance
-            base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            base_dir = r"C:\Users\HP\Desktop\Upwork_project\finespresso-modelling"
             importance_df = pd.DataFrame({'feature': importances.index, 'importance': importances.values})
-            importance_path = os.path.join(base_dir, 'reports', f'feature_importance_{datetime.now().strftime("%Y%m%d_%H%M%S")}.csv')
+            importance_path = os.path.join(base_dir, 'data', 'features_reports', f'feature_importance_{datetime.now().strftime("%Y%m%d_%H%M%S")}.csv')
+            os.makedirs(os.path.dirname(importance_path), exist_ok=True)
             importance_df.to_csv(importance_path, index=False)
             logger.info(f"Saved feature importance to {importance_path}")
         except Exception as e:
             logger.warning(f"RF importance-based selection failed: {str(e)}. Skipping RF filter.")
     
-    # Update DataFrame, keeping required columns
-    final_features = [col for col in df.columns if col in required_cols or col in selected_features]
+    # Ensure required columns are included
+    final_features = required_cols + [col for col in selected_features if col not in required_cols]
     final_features = [f for f in final_features if f in df.columns]
     
     if not final_features:
         logger.error("No valid features selected")
         raise ValueError("No valid features selected")
     
-    df_selected = df[final_features]
+    # Select only the final features for the output DataFrame
+    df_selected = df[final_features].copy()
     logger.info(f"Final selected features: {final_features}")
     
     return df_selected, final_features
 
 if __name__ == '__main__':
-    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    df = pd.read_csv(os.path.join(base_dir, 'data', 'feature_engineering', 'company_features_data.csv'))
-    params = {
-        'method': 'correlation_and_rf',
-        'correlation_threshold': 0.8,
-        'importance_threshold': 0.01
-    }
-    df_selected, selected_features = select_features(df, params)
-    df_selected.to_csv(os.path.join(base_dir, 'data', 'feature_engineering', 'selected_features_data.csv'), index=False)
-    logger.info(f"Selected features: {selected_features}")
+    input_path = r"data\feature_engineering\company_features_data_20250707.csv"
+    output_path = r"data\feature_engineering\selected_features_data_20250707.csv"
+    
+    try:
+        df = pd.read_csv(input_path)
+        logger.info(f"Loaded {len(df)} records from {input_path}")
+        params = {
+            'method': 'correlation_and_rf',
+            'correlation_threshold': 0.8,
+            'importance_threshold': 0.005
+        }
+        df_selected, selected_features = select_features(df, params)
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+        df_selected.to_csv(output_path, index=False)
+        logger.info(f"Saved selected features data to {output_path}")
+        logger.info(f"Selected features: {selected_features}")
+    except Exception as e:
+        logger.error(f"Failed to process feature selection: {str(e)}")
+        raise
+

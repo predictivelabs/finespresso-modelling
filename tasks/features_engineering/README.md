@@ -1,14 +1,14 @@
 # Features Engineering Module
 
-This directory contains a comprehensive feature engineering system for financial news impact prediction data. The module provides tools for data enrichment, feature creation, and feature selection to prepare data for machine learning models.
+This directory contains a comprehensive feature engineering system for financial news impact prediction data. The module provides tools for data enrichment, feature creation, and feature selection to prepare data for machine learning models in the **Finespresso Modelling** project.
 
 ## Overview
 
-The features engineering module is designed to transform cleaned financial news data into rich feature sets that capture market dynamics, temporal patterns, company characteristics, and sentiment information. It includes external data enrichment, time-based features, company-specific features, and intelligent feature selection.
+The features engineering module transforms cleaned financial news data into rich feature sets that capture market dynamics, temporal patterns, company characteristics, and sentiment information. It integrates with the data quality pipeline, using `validated_price_moves_20250707.csv` as input, and includes external data enrichment, time-based features, company-specific features, and intelligent feature selection.
 
 ## Files Description
 
-### 1. `features_engineering_pipeline.py` - Complete Pipeline Orchestrator
+### 1. `feature_engineering_pipeline.py` - Complete Pipeline Orchestrator
 **Purpose**: Orchestrates the entire feature engineering pipeline from data loading to final feature selection.
 
 **Key Features**:
@@ -21,17 +21,19 @@ The features engineering module is designed to transform cleaned financial news 
 **Main Function**: `run_feature_engineering_pipeline()`
 
 **Pipeline Steps**:
-1. **Yahoo Finance Enrichment**: Add market data and company information
-2. **Time Features**: Add temporal and market timing features
-3. **Company Features**: Add company-specific characteristics
-4. **Feature Selection**: Select optimal feature subset
+1. **Yahoo Finance Enrichment**: Adds market data and company information
+2. **Time Features**: Adds temporal and market timing features
+3. **Company Features**: Adds company-specific characteristics
+4. **Feature Selection**: Selects optimal feature subset
 
 **Usage**:
 ```bash
-python tasks/features_engineering/features_engineering_pipeline.py
+cd <project_root>
+python feature_engineering_pipeline.py
 ```
+**Note**: Replace `<project_root>` with the project directory (e.g., `C:/Users/HP/Desktop/Upwork_project/finespresso-modelling`).
 
-### 2. `fetch_yfinance_data.py` - External Data Enrichment
+### 2. `fetch_yfinance.py` - External Data Enrichment
 **Purpose**: Enriches the dataset with Yahoo Finance market data and company information.
 
 **Key Features**:
@@ -63,7 +65,8 @@ python tasks/features_engineering/features_engineering_pipeline.py
 
 **Usage**:
 ```bash
-python tasks/features_engineering/fetch_yfinance_data.py
+cd <project_root>
+python tasks/feature_engineering/fetch_yfinance.py
 ```
 
 ### 3. `time_features.py` - Temporal Feature Engineering
@@ -94,7 +97,8 @@ python tasks/features_engineering/fetch_yfinance_data.py
 
 **Usage**:
 ```bash
-python tasks/features_engineering/time_features.py
+cd <project_root>
+python tasks/feature_engineering/time_features.py
 ```
 
 ### 4. `company_features.py` - Company-Specific Features
@@ -106,6 +110,7 @@ python tasks/features_engineering/time_features.py
 - Sector-relative volatility comparison
 - Previous news sentiment analysis
 - TextBlob sentiment analysis for news content
+- Robust ticker validation and imputation for invalid tickers
 
 **Main Function**: `add_company_features()`
 
@@ -114,16 +119,19 @@ python tasks/features_engineering/time_features.py
 - `volatility`: Annualized stock volatility (252-day rolling)
 - `sector_relative_volatility`: Stock volatility relative to sector index
 - `prev_news_sentiment`: Average sentiment of previous news for the company
-- `combined_sentiment`: Sentiment score from title + content (if not present)
+- `combined_sentiment`: Sentiment score from title + content
 
 **Volatility Calculation**:
 - Uses 1-year historical price data
 - Annualized using √252 (trading days)
 - Sector comparison using sector indices (NASDAQ for Tech, Banking for Finance, etc.)
+- Invalid tickers (e.g., `$NQ=F`, `$AZN.ST`) are logged to `data/reports/invalid_tickers_20250707_HHMMSS.csv`
+- Missing values (e.g., 216 rows) imputed with median volatility and sector-relative volatility
 
 **Usage**:
 ```bash
-python tasks/features_engineering/company_features.py
+cd <project_root>
+python tasks/feature_engineering/company_features.py
 ```
 
 ### 5. `features_selection.py` - Intelligent Feature Selection
@@ -135,22 +143,19 @@ python tasks/features_engineering/company_features.py
 - Categorical feature encoding (One-Hot Encoding)
 - Comprehensive feature validation
 - Feature importance reporting
+- Outputs only selected features in final CSV
 
 **Main Function**: `select_features()`
 
 **Selection Methods**:
 1. **Correlation Filter**: Removes highly correlated features (>0.8 threshold)
-2. **Random Forest Importance**: Keeps features with importance > threshold
+2. **Random Forest Importance**: Keeps features with importance > 0.005
 3. **Combined Approach**: Applies both filters sequentially
 
 **Parameters**:
 - `correlation_threshold`: Maximum correlation between features (default: 0.8)
-- `importance_threshold`: Minimum Random Forest importance (default: 0.01)
+- `importance_threshold`: Minimum Random Forest importance (default: 0.005)
 - `method`: Selection method ('correlation', 'rf', 'correlation_and_rf')
-
-**Key Methods**:
-- `validate_categorical_columns()`: Validate and log categorical features
-- `select_features()`: Main feature selection function
 
 **Preserved Columns**:
 - `event`: Event type (always preserved)
@@ -159,48 +164,67 @@ python tasks/features_engineering/company_features.py
 - `actual_side`: Target variable
 - `price_change_percentage`: Target variable
 
+**Selected Features** (example output):
+- Numerical: `market_cap`, `float_shares`, `avg_volume`, `beta`, `recent_volume`, `float_ratio`, `day_of_week`, `hour`, `combined_sentiment`, `prev_news_sentiment`, `volatility`, `sector_relative_volatility`, `days_since_event`
+- Categorical (encoded): `exchange_*`, `sector_*`, `industry_*`, `market_cap_category_*`
+
 **Usage**:
 ```bash
-python tasks/features_engineering/features_selection.py
+cd <project_root>
+python tasks/feature_engineering/features_selection.py
 ```
 
 ## Running the Complete Pipeline
 
-To run the entire feature engineering pipeline:
+To run the entire feature engineering pipeline, first ensure the data quality pipeline has generated the input file:
 
 ```bash
-cd /path/to/finespresso-modelling
-python tasks/features_engineering/features_engineering_pipeline.py
+cd <project_root>
+python data_quality_pipeline.py
+python feature_engineering_pipeline.py
 ```
 
 This will:
-1. Load cleaned data from `data/clean/clean_price_moves.csv`
+1. Load cleaned data from `<project_root>/data/clean/validated_price_moves_20250707.csv`
 2. Enrich with Yahoo Finance data
 3. Add time-based features
 4. Add company-specific features
 5. Perform feature selection
-6. Save final enriched data to `data/feature_engineering/final_enriched_data.csv`
+6. Save final enriched data to `<project_root>/data/feature_engineering/selected_features_data_20250707.csv`
+
+**Note**: Ensure the working directory is set to `<project_root>` (e.g., `C:/Users/HP/Desktop/Upwork_project/finespresso-modelling`) when running `features_selection.py`, as it uses `os.getcwd()` for paths.
 
 ## Output Structure
 
 The pipeline generates the following outputs:
 
 ```
-data/
-├── feature_engineering/
-│   ├── yfinance_enriched_data.csv      # Data with Yahoo Finance features
-│   ├── time_features_data.csv          # Data with time features
-│   ├── company_features_data.csv       # Data with company features
-│   ├── selected_features_data.csv      # Data with selected features
-│   └── final_enriched_data.csv         # Final enriched dataset
-├── cache/
-│   └── yfinance_cache.pkl              # Yahoo Finance data cache
-├── quality_metrics/
-│   └── yfinance_metrics_YYYYMMDD_HHMMSS.csv  # Yahoo Finance fetch metrics
-└── reports/
-    ├── time_feature_stats_YYYYMMDD_HHMMSS.csv    # Time feature statistics
-    ├── company_features_stats_YYYYMMDD_HHMMSS.csv # Company feature statistics
-    └── feature_importance_YYYYMMDD_HHMMSS.csv     # Feature importance rankings
+<project_root>/
+├── data/
+│   ├── clean/
+│   │   └── validated_price_moves_20250707.csv        # Input from data quality pipeline
+│   ├── feature_engineering/
+│   │   ├── yfinance_enriched_data_20250707.csv       # Data with Yahoo Finance features
+│   │   ├── time_features_data_20250707.csv           # Data with time features
+│   │   ├── company_features_data_20250707.csv        # Data with company features
+│   │   └── selected_features_data_20250707.csv       # Final model-ready dataset
+│   ├── cache/
+│   │   └── yfinance_cache.pkl                       # Yahoo Finance data cache
+│   ├── quality_metrics/
+│   │   └── yfinance_metrics_20250707_HHMMSS.csv     # Yahoo Finance fetch metrics
+│   ├── features_reports/
+│   │   ├── time_feature_stats_20250707_HHMMSS.csv   # Time feature statistics
+│   │   ├── company_features_stats_20250707_HHMMSS.csv # Company feature statistics
+│   │   ├── feature_importance_20250707_HHMMSS.csv   # Feature importance rankings
+│   │   └── invalid_tickers_20250707_HHMMSS.csv      # Invalid tickers from company features
+├── tasks/
+│   ├── feature_engineering/
+│   │   ├── logs/
+│   │   │   ├── yfinance.log                        # Yahoo Finance logs
+│   │   │   ├── time_features.log                   # Time features logs
+│   │   │   ├── company_features.log                # Company features logs
+│   │   │   ├── features_selection.log              # Feature selection logs
+│   │   │   └── feature_engineering_pipeline.log    # Pipeline logs
 ```
 
 ## Feature Categories
@@ -233,7 +257,7 @@ Default parameters can be modified in each script:
 params = {
     'method': 'correlation_and_rf',
     'correlation_threshold': 0.8,
-    'importance_threshold': 0.01
+    'importance_threshold': 0.005
 }
 ```
 
@@ -257,21 +281,31 @@ Required Python packages (see `requirements.txt`):
 - scikit-learn
 - textblob
 - retrying
-- logging
+- spacy
+- matplotlib
+- seaborn
+- python-dateutil
+
+Additional setup for multilingual text processing:
+```bash
+python -m spacy download en_core_web_sm
+python -m spacy download fr_core_news_sm
+python -m spacy download nb_core_news_sm
+```
 
 ## Logging
 
 All scripts generate comprehensive logs stored in:
-- `logs/features_engineering/features_engineering_pipeline.log`
-- `logs/features_engineering/yfinance.log`
-- `logs/features_engineering/time_features.log`
-- `logs/features_engineering/company_features.log`
-- `logs/features_engineering/features_selection.log`
+- `<project_root>/tasks/feature_engineering/logs/feature_engineering_pipeline.log`
+- `<project_root>/tasks/feature_engineering/logs/yfinance.log`
+- `<project_root>/tasks/feature_engineering/logs/time_features.log`
+- `<project_root>/tasks/feature_engineering/logs/company_features.log`
+- `<project_root>/tasks/feature_engineering/logs/features_selection.log`
 
 ## Caching
 
 The Yahoo Finance module implements intelligent caching:
-- **Cache Location**: `data/cache/yfinance_cache.pkl`
+- **Cache Location**: `<project_root>/data/cache/yfinance_cache.pkl`
 - **Cache Key**: `{ticker}_{YYYYMMDD}`
 - **Cache Benefits**: Reduces API calls, improves performance
 - **Cache Management**: Automatic loading/saving with error handling
@@ -280,9 +314,10 @@ The Yahoo Finance module implements intelligent caching:
 
 The pipeline includes robust error handling:
 - **API Failures**: Retry mechanism with exponential backoff
-- **Invalid Tickers**: Graceful handling with logging
-- **Missing Data**: Intelligent imputation and validation
+- **Invalid Tickers**: Handled in `company_features.py` with imputation and logging to `data/reports/invalid_tickers_20250707_HHMMSS.csv`
+- **Missing Data**: Imputation for numerical and categorical features
 - **Feature Dependencies**: Validation of required columns
+- **Feature Selection**: Ensures only selected features are saved in `selected_features_data_20250707.csv`
 
 ## Performance Considerations
 
@@ -290,3 +325,4 @@ The pipeline includes robust error handling:
 - **Memory Management**: Efficient DataFrame operations
 - **Caching**: Reduces redundant API calls
 - **Parallel Processing**: Sequential execution for data consistency
+- **Portability**: `features_selection.py` uses `os.getcwd()` for dynamic paths, assuming execution from project root
