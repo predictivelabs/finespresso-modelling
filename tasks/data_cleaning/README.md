@@ -27,7 +27,7 @@ The data cleaning module is designed to handle financial news data with event-sp
 **Main Class**: `DataCleaner`
 
 **Key Methods**:
-- `load_data()`: Load CSV data from `/data/backfilling/aall_news_cleaned__YYYYMMDD_HHMMSS.csv.csv`
+- `load_data()`: Load CSV data from `/data/backfilling/processed_results.csv`
 - `impute_high_missing_columns()`: Impute columns with >90% missing values using KNN for numerical and mode for categorical
 - `impute_missing_values()`: Event-specific imputation for remaining numerical columns
 - `detect_outliers_iqr()`: Event-specific outlier detection for `price_change_percentage` and `daily_alpha`
@@ -162,7 +162,7 @@ python data_quality_pipeline.py
 ```
 
 This will:
-1. Clean the data from `data/backfilling/all_news_cleaned__YYYYMMDD_HHMMSS.csv` using event-specific strategies (~2,129 rows after cleaning)
+1. Clean the data from `data/backfilling/processed_results.csv` using event-specific strategies (~2,129 rows after cleaning)
 2. Validate the cleaned data, ensuring correct data types, balanced classes, and valid ranges
 3. Monitor data quality metrics with baseline comparison
 4. Version the validated data and track lineage
@@ -176,7 +176,7 @@ The pipeline generates the following outputs:
 C:/Users/HP/Desktop/Upwork_project/finespresso-modelling/
 ├── data/
 │   ├── backfilling/
-│   │   └── all_news_cleaned__YYYYMMDD_HHMMSS.csv  # Input data
+│   │   └── processed_results.csv  # Input data
 │   ├── clean/
 │   │   ├── cleaned_price_moves_YYYYMMDD.csv          # Cleaned data (~2,129 rows, 32 columns)
 │   │   └── validated_price_moves_YYYYMMDD.csv        # Validated data
@@ -212,7 +212,7 @@ C:/Users/HP/Desktop/Upwork_project/finespresso-modelling/
 
 The pipeline uses default paths but can be customized by modifying the parameters in `data_quality_pipeline.py`:
 
-- **Input data**: `data/backfilling/all_news_cleaned__YYYYMMDD_HHMMSS.csv`
+- **Input data**: `data/backfilling/processed_results.csv`
 - **Cleaned data**: `data/clean/cleaned_price_moves_YYYYMMDD.csv`
 - **Validated data**: `data/clean/validated_price_moves_YYYYMMDD.csv`
 - **Metrics directory**: `C:/Users/HP/Desktop/Upwork_project/finespresso-modelling/data/quality_metrics/`
