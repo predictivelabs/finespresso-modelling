@@ -4,6 +4,14 @@ import pandas as pd
 from datetime import datetime
 import logging
 
+
+
+# Add project root to path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from utils.db.news_db_util import get_news_df
+
+
 # Configure logging
 log_dir = os.path.join('playground', 'logs')
 os.makedirs(log_dir, exist_ok=True)
@@ -21,15 +29,6 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 logger.info("Logging initialized for get_news")
 
-# Add project root to path (adjust based on project structure)
-project_root = os.path.abspath(os.path.join(os.getcwd(), '..'))  # Go up one directory
-sys.path.append(project_root)
-
-try:
-    from utils.db.news_db_util import get_news_df
-except ModuleNotFoundError as e:
-    logger.error(f"Import error: {e}. Please check if utils/db/news_db_util.py exists in {project_root} and the path is correct.")
-    raise
 
 def get_and_save_news():
     """Fetch news data from database and save to CSV."""
