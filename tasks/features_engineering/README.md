@@ -8,7 +8,7 @@ The features engineering module transforms cleaned financial news data into rich
 
 ## Files Description
 
-### 1. `feature_engineering_pipeline.py` - Complete Pipeline Orchestrator
+### 1. `features_engineering_pipeline.py` - Complete Pipeline Orchestrator
 **Purpose**: Orchestrates the entire feature engineering pipeline from data loading to final feature selection.
 
 **Key Features**:
@@ -33,7 +33,7 @@ python feature_engineering_pipeline.py
 ```
 **Note**: Replace `<project_root>` with the project directory (e.g., `C:/Users/HP/Desktop/Upwork_project/finespresso-modelling`).
 
-### 2. `fetch_yfinance.py` - External Data Enrichment
+### 2. `fetch_yfinance_daata.py` - External Data Enrichment
 **Purpose**: Enriches the dataset with Yahoo Finance market data and company information.
 
 **Key Features**:
