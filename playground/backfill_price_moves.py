@@ -253,7 +253,7 @@ if __name__ == "__main__":
     INPUT_FILE = "data/backfilling/all_news_20250708_114929.csv"
     OUTPUT_FILE = "data/backfilling/processed_results.csv"
     OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-    TEST_SIZE = 10  # Set to None to process all rows
+    TEST_SIZE = 10000  # Set to None to process all rows
     
     processor = PriceDataProcessor(openai_api_key=OPENAI_API_KEY)
     processor.process_data(INPUT_FILE, OUTPUT_FILE, test_size=TEST_SIZE, openai_api_key=OPENAI_API_KEY)
