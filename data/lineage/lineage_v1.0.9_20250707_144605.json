@@ -1,0 +1,36 @@
+{
+  "version": "v1.0.9",
+  "timestamp": "2025-07-07T14:46:05.325254",
+  "input_path": "C:\\Users\\HP\\Desktop\\Upwork_project\\finespresso-modelling\\data\\clean\\cleaned_price_moves_20250707.csv",
+  "input_hash": "d7b545dd5486828c169e4fe319580a94cbf967aac011261d52805d145e52d8d7",
+  "output_path": "C:\\Users\\HP\\Desktop\\Upwork_project\\finespresso-modelling\\data\\clean\\validated_price_moves_20250707.csv",
+  "output_hash": "ee17ddd218e4b104cd6dadc7383c609171c9f6bab4afa583d46150db73404de5",
+  "processing_steps": [
+    "clean_data",
+    "validate_data",
+    "monitor_metrics"
+  ],
+  "parameters": {
+    "input_path": "C:\\Users\\HP\\Desktop\\Upwork_project\\finespresso-modelling\\data\\backfilling\\processed_results.csv",
+    "cleaned_output_path": "C:\\Users\\HP\\Desktop\\Upwork_project\\finespresso-modelling\\data\\clean\\cleaned_price_moves_20250707.csv",
+    "validated_output_path": "C:\\Users\\HP\\Desktop\\Upwork_project\\finespresso-modelling\\data\\clean\\validated_price_moves_20250707.csv",
+    "metrics_dir": "C:\\Users\\HP\\Desktop\\Upwork_project\\finespresso-modelling\\data\\quality_metrics",
+    "versions_dir": "C:\\Users\\HP\\Desktop\\Upwork_project\\finespresso-modelling\\data\\versions",
+    "lineage_dir": "C:\\Users\\HP\\Desktop\\Upwork_project\\finespresso-modelling\\data\\lineage",
+    "cleaning_params": {
+      "outlier_iqr_threshold": 1.5,
+      "winsorize_limits": 0.05,
+      "min_text_length": 10
+    },
+    "validation_params": {
+      "price_change_percentage_threshold": 100,
+      "daily_alpha_threshold": 1000,
+      "outlier_iqr_multiplier": 3.0,
+      "class_balance_threshold": 0.2,
+      "min_text_length": 10
+    },
+    "metrics_params": {
+      "outlier_iqr_multiplier": 1.5
+    }
+  }
+}

@@ -1,0 +1,170 @@
+feature,importance
+market_cap,0.08257750887608459
+float_shares,0.04768882608653853
+avg_volume,0.021128294415812113
+beta,0.06649433244201813
+recent_volume,0.013609333685406759
+float_ratio,0.0704988057368239
+sector_performance,0.0008366740821381984
+day_of_week,0.039079778970408145
+hour,0.06819940860410453
+combined_sentiment,0.13046350054548048
+prev_news_sentiment,0.05129520663454823
+volatility,0.11061308556607591
+days_since_event,0.12554448314963754
+exchange_AMS,0.0031492605619765556
+exchange_ASE,0.005000928816431035
+exchange_ASX,9.0986782400038e-05
+exchange_BER,1.2520200100854359e-05
+exchange_BRU,0.001297351749118531
+exchange_BTS,0.001592592716094992
+exchange_CBT,0.00017845660358417154
+exchange_CCC,2.8534734879211505e-05
+exchange_CCY,6.852851202896943e-06
+exchange_CME,0.0013545408749441909
+exchange_CMX,0.0011144100847596868
+exchange_CPH,0.0020948813079833557
+exchange_CXE,0.00028950133187015343
+exchange_CXI,2.8186362128956908e-05
+exchange_DUS,1.4941856699620075e-06
+exchange_FRA,0.0007730430071804353
+exchange_HAN,6.287598346463385e-05
+exchange_HEL,8.42179867413535e-05
+exchange_ICE,0.00025274083684372674
+exchange_LIS,0.0005878949539421388
+exchange_LSE,1.2648739125676423e-05
+exchange_MEX,4.280378024078624e-06
+exchange_NAS,1.5184153282130751e-05
+exchange_NCM,0.00760019970375192
+exchange_NGM,0.0025943973861247394
+exchange_NMS,0.005707620145706466
+exchange_NYB,0.0012415139125655152
+exchange_NYM,0.00042436235187334303
+exchange_NYQ,0.0016183251606545063
+exchange_OEM,0.0009567245796196519
+exchange_OQB,0.0017361731930217433
+exchange_OQX,0.00023949913618064446
+exchange_OSL,0.009347960797516907
+exchange_PAR,0.002497025701453761
+exchange_PCX,0.0015921839550647582
+exchange_PNK,0.0010253150760587317
+exchange_RIS,0.0
+exchange_STO,0.0017007473697171116
+exchange_STU,1.3301482897031563e-06
+exchange_TOR,7.641893741927061e-06
+exchange_YHD,1.1240946284884993e-06
+sector_Basic Materials,0.002306756385108155
+sector_Communication Services,0.001039088615463069
+sector_Consumer Cyclical,0.0010021482899016403
+sector_Consumer Defensive,0.001271591468622178
+sector_Energy,0.001124442156525634
+sector_Financial Services,0.0012905363730435502
+sector_Healthcare,0.005830492132367872
+sector_Industrials,0.0027833407797496525
+sector_Real Estate,0.000413428587442621
+sector_Technology,0.003621370246147313
+sector_Unknown,0.000708757285628656
+sector_Utilities,0.0008595564079365966
+industry_Advertising Agencies,0.00015259341534486814
+industry_Aerospace & Defense,0.0018752149506570312
+industry_Agricultural Inputs,0.0006165188840618191
+industry_Airlines,0.0014665769293444114
+industry_Aluminum,0.0005892124409747054
+industry_Apparel Manufacturing,9.67428115876206e-08
+industry_Apparel Retail,5.153639467484806e-06
+industry_Asset Management,0.00032787529757164965
+industry_Auto Manufacturers,0.0007423011921593287
+industry_Auto Parts,0.00021426392327216287
+industry_Banks - Regional,0.0017997677563328662
+industry_Beverages - Non-Alcoholic,1.0974500425610801e-05
+industry_Beverages - Wineries & Distilleries,0.0002537107777618637
+industry_Broadcasting,0.0013144347860241257
+industry_Building Materials,0.0005040952584331088
+industry_Building Products & Equipment,5.178685017652556e-05
+industry_Business Equipment & Supplies,0.0005785592509949804
+industry_Capital Markets,0.0029904075557174326
+industry_Communication Equipment,0.000574794421928877
+industry_Computer Hardware,0.0016451685546507225
+industry_Conglomerates,0.0002653551756334252
+industry_Consulting Services,1.4307799294929358e-05
+industry_Credit Services,0.0003899185808100214
+industry_Diagnostics & Research,0.002210945059340773
+industry_Discount Stores,6.0597559394910265e-05
+industry_Drug Manufacturers - General,0.0003611597434195685
+industry_Drug Manufacturers - Specialty & Generic,0.001611215488361252
+industry_Education & Training Services,1.8904774227586495e-05
+industry_Electrical Equipment & Parts,0.00044609241862776595
+industry_Electronic Components,0.0012084775061468314
+industry_Engineering & Construction,0.0004279763254818323
+industry_Entertainment,9.411681772499239e-05
+industry_Farm & Heavy Construction Machinery,0.00039437342761492573
+industry_Farm Products,0.0009352805480437311
+industry_Financial Conglomerates,0.00015473736476129824
+industry_Financial Data & Stock Exchanges,6.32485269559132e-05
+"industry_Furnishings, Fixtures & Appliances",2.0638220996231108e-07
+industry_Gold,0.0010760945251752291
+industry_Grocery Stores,8.7621519138311e-05
+industry_Health Information Services,0.0010309750540276313
+industry_Household & Personal Products,0.0011142294162593907
+industry_Industrial Distribution,0.00021345874661989083
+industry_Information Technology Services,0.005273815350548957
+industry_Insurance - Diversified,0.0004378814502266036
+industry_Insurance - Property & Casualty,3.775909236270827e-06
+industry_Insurance - Reinsurance,0.00010192648692893797
+industry_Insurance - Specialty,2.451390463663026e-05
+industry_Integrated Freight & Logistics,0.0008877051289059891
+industry_Internet Content & Information,0.0018135604902396393
+industry_Internet Retail,0.0018936904627701414
+industry_Leisure,8.938256822873619e-05
+industry_Lodging,3.4306314529425555e-05
+industry_Luxury Goods,1.564882052266649e-05
+industry_Marine Shipping,0.0022399916871702354
+industry_Medical Care Facilities,1.854884778747766e-05
+industry_Medical Devices,0.0023785331104119534
+industry_Medical Distribution,0.000854001179636231
+industry_Medical Instruments & Supplies,0.0011869916625631579
+industry_Oil & Gas Drilling,0.0004753575366076813
+industry_Oil & Gas E&P,0.0014329305489889355
+industry_Oil & Gas Equipment & Services,0.0007310445709755763
+industry_Oil & Gas Integrated,0.0003158888890386663
+industry_Oil & Gas Midstream,0.0025616943111609124
+industry_Oil & Gas Refining & Marketing,0.0022269343432124175
+industry_Other Industrial Metals & Mining,0.0011873479649676078
+industry_Other Precious Metals & Mining,4.3881914740200804e-05
+industry_Packaged Foods,0.0008316380900668578
+industry_Packaging & Containers,8.483971379968088e-05
+industry_Paper & Paper Products,0.00026810283083597634
+industry_Pollution & Treatment Controls,0.00022358038972080185
+industry_Publishing,0.0005799692859871472
+industry_REIT - Diversified,1.8685263321162365e-05
+industry_REIT - Healthcare Facilities,0.0001243077748619366
+industry_REIT - Retail,8.013259637119719e-07
+industry_Railroads,0.0005764240271042087
+industry_Real Estate - Development,0.00019564494086679406
+industry_Real Estate - Diversified,0.0015479681250008617
+industry_Real Estate Services,0.0006395031587233827
+industry_Residential Construction,2.6384112990578923e-05
+industry_Resorts & Casinos,1.296714855856174e-05
+industry_Scientific & Technical Instruments,0.0027401616264554843
+industry_Semiconductor Equipment & Materials,0.0005096013705247509
+industry_Semiconductors,0.0008172954991177999
+industry_Shell Companies,7.35343937747661e-05
+industry_Silver,0.0004304504256966106
+industry_Software - Application,0.0011834137655891035
+industry_Software - Infrastructure,0.011082289753783479
+industry_Solar,0.002779056355706239
+industry_Specialty Business Services,0.002195359136882527
+industry_Specialty Chemicals,0.0011398571376592202
+industry_Specialty Industrial Machinery,0.0022555071805421627
+industry_Staffing & Employment Services,1.4383190911750753e-06
+industry_Steel,0.0009583013546284418
+industry_Telecom Services,0.00039727255710267947
+industry_Textile Manufacturing,6.465170531913911e-06
+industry_Tobacco,1.5687353042169684e-05
+industry_Utilities - Diversified,0.001737404884509727
+industry_Utilities - Regulated Electric,2.4420953046256412e-05
+industry_Utilities - Renewable,0.0012239588318570071
+industry_Waste Management,0.00047230966461640674
+market_cap_category_Large,0.0009403360008762268
+market_cap_category_Mid,0.002144801619646388
+market_cap_category_Small,0.0010118297853688929

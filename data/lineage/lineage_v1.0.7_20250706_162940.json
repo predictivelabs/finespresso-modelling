@@ -1,0 +1,23 @@
+{
+  "version": "v1.0.7",
+  "timestamp": "2025-07-06T16:29:40.618568",
+  "input_path": "C:\\Users\\HP\\Desktop\\Upwork_project\\finespresso-modelling\\data\\backfill_data\\price_moves_backfill_20250706_151035.csv",
+  "input_hash": "c479b361409c7c92787a4e26a0c8aea80e6e38223f0f628d2abb62f350c9cdc5",
+  "output_path": "C:\\Users\\HP\\Desktop\\Upwork_project\\finespresso-modelling\\data\\clean\\validated_price_moves_20250706.csv",
+  "output_hash": "c53e144ebfbe62400f68f0a12be8a9e322f91f05deedb6b685c7482178325568",
+  "processing_steps": [
+    "check_input_structure",
+    "validate_data_types",
+    "validate_categorical_values",
+    "validate_price_ranges",
+    "validate_outliers",
+    "validate_text_quality"
+  ],
+  "parameters": {
+    "price_change_percentage_threshold": 100,
+    "daily_alpha_threshold": 1000,
+    "outlier_iqr_multiplier": 3.0,
+    "class_balance_threshold": 0.2,
+    "min_text_length": 10
+  }
+}
